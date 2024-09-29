@@ -1,0 +1,30 @@
+import paho.mqtt.client as mqtt
+import time
+
+# Callback function for connection
+def on_connect(client, userdata, flags, rc):
+    print("Connected with result code " + str(rc))
+    client.subscribe("printer/commands")
+
+# Callback function for received messages
+def on_message(client, userdata, msg):
+    command = msg.payload.decode()
+    if command == "start_print":
+        start_print_job()
+
+# Function to start the print job
+def start_print_job():
+    print("Starting print job...")
+    # Add G-code commands here to control the printer
+
+# Setting up the MQTT client
+client = mqtt.Client()
+client.on_connect = on_connect
+client.on_message = on_message
+
+client.connect("192.168.1.100", 1883, 60)
+
+client.loop_start()
+
+while True:
+    time.sleep(1)
